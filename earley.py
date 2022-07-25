@@ -1,3 +1,4 @@
+from math import prod
 from black import out
 
 
@@ -68,34 +69,40 @@ def outros_conjuntos(palavra, V, T, P, S, D0):
         letra_palavra = palavra[r-1]
         producoes = []
         verificador = []
-        
         for i in D[r-1][1]:
             if(i[2][0] < len(i[1])):
-                if(i[1][i[2][0]] == letra_palavra):
-                    producoes.append([i[0], i[1], [i[2][0] + 1, i[2][1]]])
-        for j in producoes:
-            if (j[2][0] == len(j[1])):
-                for i in D[j[2][1]][1]:
-                    if(i[1][i[2][0]] == j[0]):
-                        producoes.append([i[0], i[1], [i[2][0]+1, i[2][1]]])
-            else:
-                if(j[1][j[2][0]] in V):
-                    verificador.append(j[1][j[2][0]])
-                    for i in D[r-1][1]:
-                        if(j[1][j[2][0]] == i[0]):
-                            producoes.append([i[0], i[1], [0,r]])
-        D.append([r, producoes])
-        print(1)
-    print('==========D1==========')
-    imprimir_conjunto(D[1][1])
-    print('======================')
-    print('==========D2==========')
-    imprimir_conjunto(D[2][1])
-    print('======================')
-    print('==========D3==========')
-    imprimir_conjunto(D[3][1])
-    print('======================')
-                            
+                if(letra_palavra == i[1][i[2][0]]):
+                    producoes.append([i[0],i[1],[i[2][0] + 1, i[2][1]]])
+        if producoes != []:
+            for i in producoes:
+                if(len(i[1]) == i[2][0]):
+                    for j in D[i[2][1]][1]:
+                            if(j[1][j[2][0]] == i[0]):
+                                producoes.append([j[0],j[1],[j[2][0]+1,j[2][1]]])
+                else:
+                    if(i[1][i[2][0]] in V):
+                        if(i[1][i[2][0]] in verificador):
+                            continue
+                        else:
+                            verificador.append(i[1][i[2][0]])
+                            for j in D0:
+                                if(j[0] == i[1][i[2][0]]):
+                                    producoes.append([j[0],j[1],[0, r]])
+        D.append([r,producoes])
+    return D
+       
+def verifica_palavra(D, palavra, S):
+    tamanho_palavra = len(palavra)
+    producoes_iniciais = []
+    status = 0
+    for i in D[0][1]:
+        if(i[0] == S):
+            producoes_iniciais.append([i[0],i[1],[len(i[1]),0]])
+    for i in producoes_iniciais:
+        if(i in D[tamanho_palavra][1]):
+            status = 1
+    return status
+
 
 
         
@@ -110,12 +117,20 @@ print(f'Estado Inicial: {S}')
 D0 = primeiro_conjunto(V,T,P,S)
 # print(D0)
 # palavra = input("Digite a palavra a ser analisada:")
-palavra = 'x+x'
+palavra = 'xxx'
 print('==========D0==========')
 imprimir_conjunto(D0)
 print('======================')
-outros_conjuntos(palavra, V,T,P,S,D0)
-
+D = outros_conjuntos(palavra, V,T,P,S,D0)
+for i in range(1, len(palavra)+1):
+    print(f'==========D{i}==========')
+    imprimir_conjunto(D[i][1])
+    print('======================')
+status = verifica_palavra(D, palavra, S)
+if(status == 1):
+    print('Palavra verificada com sucesso, pertence a gramatica')
+else:
+    print('Palavra nao pertence a gramatica')
 # manipulações com o P
 # print(len(P[0][1])) # tamanho da lista associada a E
 # print(P[0][1][1]) # acessar elemento da lista associada a E
