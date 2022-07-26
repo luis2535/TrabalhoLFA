@@ -59,7 +59,7 @@ def imprimir_conjunto(conjunto):
         print(f"{i[0]} -> {producao}")
 
 # Função para construção dos demais conjuntos de produção
-def outros_conjuntos(palavra, V, D0):
+def outros_conjuntos(palavra, V, D0, P):
     tamanho_palavra = len(palavra)
     
     D = [[0,D0]] # Todas as produções ficarão salvas em D
@@ -75,15 +75,16 @@ def outros_conjuntos(palavra, V, D0):
             for i in producoes: # Percorre o array se ele não for nulo
                 if(len(i[1]) == i[2][0]): # Verifica se alguma produção chegou ao final
                     for j in D[i[2][1]][1]: # Verifica que conjunto originou essa produção
-                            if(j[1][j[2][0]] == i[0]):
-                                producoes.append([j[0],j[1],[j[2][0]+1,j[2][1]]]) # Adiciona produção que gerou passando o ponto para direita
+                            if(j[2][0] != len(j[1])):
+                                if(j[1][j[2][0]] == i[0]):
+                                    producoes.append([j[0],j[1],[j[2][0]+1,j[2][1]]]) # Adiciona produção que gerou passando o ponto para direita
                 else:
                     if(i[1][i[2][0]] in V): #Verifica se a posição do ponto que a produção está é uma Variavel
                         if(i[1][i[2][0]] in verificador):
                             continue
                         else:
                             verificador.append(i[1][i[2][0]])
-                            for j in D0:
+                            for j in P:
                                 if(j[0] == i[1][i[2][0]]):
                                     producoes.append([j[0],j[1],[0, r]]) # Adiciona essa produção adicionando o ponto na posição zero e em que conjunto foi gerada
         D.append([r,producoes])
@@ -123,10 +124,11 @@ D0 = primeiro_conjunto(V,P,S)
 palavra = input("Digite a palavra a ser analisada:")
 
 
+
 print('==========D0==========')
 imprimir_conjunto(D0)
 print('======================')
-D = outros_conjuntos(palavra, V,D0)
+D = outros_conjuntos(palavra, V, D0, P)
 for i in range(1, len(palavra)+1):
     print(f'==========D{i}==========')
     imprimir_conjunto(D[i][1])
