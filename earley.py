@@ -1,3 +1,4 @@
+# Alunos: Luís Eduardo Bertelli e Yuji Yamada Correa
 # Função para receber arquivo txt e captar dados
 def abrir_arquivo():
     with open("entrada.txt") as file:
@@ -106,6 +107,7 @@ def verifica_palavra(D, palavra, S):
             status = 1 #caso palavra tenha sido identificada
     if status == 0: # caso palavra não tenha sido identificada
         print('Palavra nao pertence a gramatica')
+    return status
 
 
 
@@ -119,15 +121,13 @@ print(f'Variaveis : {V}')
 print(f'Terminais : {T}')
 print(f'Producoes : {P}')
 print(f'Estado Inicial: {S}')
+
 D0 = primeiro_conjunto(V,P,S)
 # print(D0)
-palavra = input("Digite a palavra a ser analisada:")
-
-
-
 print('==========D0==========')
 imprimir_conjunto(D0)
 print('======================')
+palavra = input("Digite a palavra a ser analisada:")
 D = outros_conjuntos(palavra, V, D0, P)
 for i in range(1, len(palavra)+1):
     print(f'==========D{i}==========')
